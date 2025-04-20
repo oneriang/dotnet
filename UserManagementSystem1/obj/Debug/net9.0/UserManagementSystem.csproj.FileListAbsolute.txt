@@ -1,0 +1,8 @@
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.csproj.AssemblyReference.cache
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.GeneratedMSBuildEditorConfig.editorconfig
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.AssemblyInfoInputs.cache
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.AssemblyInfo.cs
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.csproj.CoreCompileInputs.cache
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.MvcApplicationPartsAssemblyInfo.cache
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.RazorAssemblyInfo.cache
+/root/ws/dotnet/UserManagementSystem/obj/Debug/net9.0/UserManagementSystem.RazorAssemblyInfo.cs

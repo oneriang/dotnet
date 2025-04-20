@@ -1,0 +1,63 @@
+@model UserManagementSystem.Models.ComponentModels.LayoutConfig
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>@Model.Title</h1>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" onclick="showCreateModal()">
+                <i class="fas fa-plus"></i> 添加用户
+            </button>
+        </div>
+    </div>
+    
+    <!-- @foreach (var section in Model.Sections)
+    {
+        @switch (section.Type.ToLower())
+        {
+            case "table":
+                @await Component.InvokeAsync("Table", section)
+                break;
+        }
+    } -->
+</div>
+
+<div id="modalContainer"></div>
+
+@section Scripts {
+    <script>
+    function showCreateModal() {
+        loadModal('userForm', '添加用户', {});
+    }
+    
+    function showEditModal(userId) {
+        $.get(`/api/users/${userId}`, function(user) {
+            loadModal('userForm', '编辑用户', user);
+        });
+    }
+    
+    function loadModal(formId, title, data) {
+        $.get('/Home/GetForm', { formId: formId, data: data }, function(html) {
+            $('#modalContainer').html(html);
+            $(`#${formId}Modal`).modal('show');
+        });
+    }
+    
+    function deleteUser(userId) {
+        if (confirm('确定要删除这个用户吗？')) {
+            $.ajax({
+                url: `/api/users/${userId}`,
+                type: 'DELETE',
+                success: function() {
+                    toastr.success('用户删除成功');
+                    $('#userTable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    toastr.error('删除失败: ' + xhr.responseJSON?.message);
+                }
+            });
+        }
+    }
+    </script>
+}

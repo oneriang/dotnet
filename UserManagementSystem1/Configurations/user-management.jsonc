@@ -1,0 +1,101 @@
+{
+  "layout": {
+    "title": "用户管理系统",
+    "sections": [
+      {
+        "type": "table",
+        "id": "userTable",
+        "title": "用户列表",
+        "columns": [
+          { "name": "Id", "display": "ID", "type": "number", "sortable": true },
+          { "name": "Username", "display": "用户名", "type": "string", "sortable": true },
+          { "name": "Email", "display": "邮箱", "type": "string" },
+          { "name": "Phone", "display": "电话", "type": "string" },
+          { "name": "IsActive", "display": "状态", "type": "boolean" },
+          { 
+            "name": "Actions", 
+            "display": "操作", 
+            "type": "action",
+            "actions": [
+              {
+                "type": "button",
+                "text": "编辑",
+                "class": "btn-sm btn-primary",
+                "icon": "fas fa-edit",
+                "onClick": "showEditModal"
+              },
+              {
+                "type": "button",
+                "text": "删除",
+                "class": "btn-sm btn-danger",
+                "icon": "fas fa-trash",
+                "onClick": "deleteUser"
+              }
+            ]
+          }
+        ],
+        "dataSource": "/api/users",
+        "pagination": {
+          "enabled": true,
+          "pageSize": 5
+        }
+      }
+    ]
+  },
+  "forms": {
+    "userForm": {
+      "title": "用户表单",
+      "fields": [
+        { "name": "Id", "type": "hidden" },
+        {
+          "name": "Username",
+          "label": "用户名",
+          "type": "text",
+          "required": true,
+          "maxlength": 50,
+          "placeholder": "请输入用户名"
+        },
+        {
+          "name": "Email",
+          "label": "邮箱",
+          "type": "email",
+          "required": true,
+          "placeholder": "请输入邮箱"
+        },
+        {
+          "name": "Phone",
+          "label": "电话",
+          "type": "tel",
+          "placeholder": "请输入电话号码"
+        },
+        {
+          "name": "Password",
+          "label": "密码",
+          "type": "password",
+          "required": true,
+          "placeholder": "请输入密码",
+          "condition": "!Id"
+        },
+        {
+          "name": "IsActive",
+          "label": "激活状态",
+          "type": "switch",
+          "defaultValue": true
+        }
+      ],
+      "buttons": [
+        {
+          "type": "submit",
+          "text": "保存",
+          "class": "btn-primary"
+        },
+        {
+          "type": "button",
+          "text": "取消",
+          "class": "btn-secondary",
+          "onClick": "hideModal"
+        }
+      ]
+    }
+  }
+}

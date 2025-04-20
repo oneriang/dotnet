@@ -1,0 +1,97 @@
+@using UserManagementSystem.Models.ComponentModels;
+
+@model FormComponent
+@{
+    var formData = ViewBag.FormData as User ?? new User();
+}
+
+<div class="modal fade" id="@Model.Id-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@ViewBag.Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="@Model.Id" method="post">
+                <div class="modal-body">
+                    @foreach (var field in Model.Fields)
+                    {
+                        @if (!field.Hidden)
+                        {
+                            @await Component.InvokeAsync("FormField", new { 
+                                field = field, 
+                                value = formData.GetType().GetProperty(field.Name)?.GetValue(formData) 
+                            })
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    @foreach (var button in Model.Buttons)
+                    {
+                        <button type="@button.Type" class="btn @button.Class">
+                            @button.Text
+                        </button>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    const formId = '@Model.Id';
+    const isEdit = @(formData.Id > 0 ? "true" : "false");
+    
+    $(`#${formId}`).validate({
+        rules: {
+            Username: { required: true, maxlength: 50 },
+            Email: { required: true, email: true },
+            Password: { required: !isEdit }
+        },
+        messages: {
+            Username: { required: "请输入用户名", maxlength: "用户名不能超过50个字符" },
+            Email: { required: "请输入邮箱", email: "请输入有效的邮箱地址" },
+            Password: { required: "请输入密码" }
+        },
+        errorElement: 'div',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.after(error);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        submitHandler: function(form) {
+            const formData = $(form).serializeArray();
+            const data = {};
+            formData.forEach(item => {
+                data[item.name] = item.value;
+            });
+            
+            const url = isEdit ? `/api/users/${data.Id}` : '/api/users';
+            const method = isEdit ? 'PUT' : 'POST';
+            
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function() {
+                    toastr.success(`用户${isEdit ? '更新' : '创建'}成功`);
+                    $(`#${formId}-modal`).modal('hide');
+                    $('#userTable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    toastr.error(`操作失败: ${xhr.responseJSON?.message || xhr.statusText}`);
+                }
+            });
+        }
+    });
+});
+</script>

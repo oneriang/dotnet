@@ -1,0 +1,94 @@
+@using UserManagementSystem.Models.ComponentModels;
+
+@model TableComponent
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">@Model.Title</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="@Model.Id" style="width:100%">
+            <thead>
+                <tr>
+                    @foreach (var column in Model.Columns)
+                    {
+                        <th>@column.Display</th>
+                    }
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#@Model.Id').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '@Model.DataSource',
+            type: 'GET',
+            data: function(d) {
+                return {
+                    page: (d.start / d.length) + 1,
+                    pageSize: d.length
+                };
+            },
+            dataSrc: function(json) {
+                return json.items;
+            }
+        },
+        columns: [
+            @foreach (var column in Model.Columns)
+            {
+                if (column.Type == "boolean")
+                {
+                    <text>
+                    {
+                        data: '@column.Name',
+                        render: function(data, type, row) {
+                            return data ? '<span class="badge bg-success">启用</span>' : '<span class="badge bg-danger">禁用</span>';
+                        }
+                    },
+                    </text>
+                }
+                else if (column.Type == "action")
+                {
+                    <text>
+                    {
+                        data: 'Id',
+                        render: function(data, type, row) {
+                            return `
+                                @foreach (var action in column.Actions)
+                                {
+                                    <text>
+                                    <button class="btn @action.Class" onclick="@action.OnClick(${data})">
+                                        @if (!string.IsNullOrEmpty(action.Icon))
+                                        {
+                                            <text><i class="@action.Icon"></i> </text>
+                                        }
+                                        @action.Text
+                                    </button>
+                                    </text>
+                                }
+                            `;
+                        },
+                        orderable: false,
+                        searchable: false
+                    },
+                    </text>
+                }
+                else
+                {
+                    <text>{ data: '@column.Name' },</text>
+                }
+            }
+        ],
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/zh.json'
+        },
+        responsive: true
+    });
+});
+</script>

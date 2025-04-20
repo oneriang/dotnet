@@ -1,0 +1,7 @@
+bin/
+obj/
+.vs/
+user-management.db
+*.swp
+*.swo
+.DS_Store
